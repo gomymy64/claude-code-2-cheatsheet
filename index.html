@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Материалы к Уроку Claude Code 2.0 | Мастодонт</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070914;
+    --bg2:#0c1020;
+    --bg3:#11172e;
+    --surface:#141a30;
+    --line:rgba(255,255,255,0.08);
+    --line2:rgba(255,255,255,0.16);
+    --text:#E8ECF3;
+    --text2:#9AA3B8;
+    --text3:#5F6887;
+    --accent1:#00E5FF;
+    --accent2:#B936FF;
+    --accent-green:#64FF9B;
+    --accent-amber:#FFC247;
+    --display:'Unbounded',system-ui,sans-serif;
+    --serif:'Instrument Serif',serif;
+    --body:'Manrope',system-ui,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --grad:linear-gradient(135deg,var(--accent1) 0%,var(--accent2) 100%);
+    --grad2:linear-gradient(90deg,var(--accent1),var(--accent2));
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:80px}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--body);font-weight:400;line-height:1.55;-webkit-font-smoothing:antialiased}
+  body{
+    background:
+      radial-gradient(1200px 800px at 80% -10%, rgba(185,54,255,0.12), transparent 60%),
+      radial-gradient(900px 700px at -10% 30%, rgba(0,229,255,0.10), transparent 60%),
+      radial-gradient(800px 600px at 50% 110%, rgba(185,54,255,0.08), transparent 60%),
+      var(--bg);
+    min-height:100vh;position:relative;overflow-x:hidden;
+  }
+
+  /* noise texture (branded) */
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.025;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  /* scanline faint */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0.35;
+    background-image:repeating-linear-gradient(180deg,transparent 0,transparent 2px,rgba(255,255,255,0.012) 2px,rgba(255,255,255,0.012) 3px);
+  }
+
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--grad2);border-radius:8px}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:0 clamp(16px,3vw,40px);position:relative;z-index:2}
+
+  /* ========== NAV ========== */
+  .nav{
+    position:sticky;top:0;z-index:100;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    background:rgba(7,9,20,0.72);
+    border-bottom:1px solid transparent;
+    background-clip:padding-box;
+  }
+  .nav::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+    background:linear-gradient(90deg,transparent 0%,var(--accent1) 30%,var(--accent2) 70%,transparent 100%);
+    opacity:0.7;
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:24px}
+  .brand{
+    font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:0.02em;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .brand::before{content:"◆";font-size:12px;color:var(--accent1);-webkit-text-fill-color:var(--accent1)}
+  .nav-links{display:flex;gap:8px;flex-wrap:wrap}
+  .nav-link{
+    font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:0.06em;
+    padding:8px 14px;border:1px solid var(--line);border-radius:999px;color:var(--text2);
+    transition:.2s;text-transform:uppercase;
+  }
+  .nav-link:hover{border-color:var(--accent1);color:var(--accent1);box-shadow:0 0 20px rgba(0,229,255,0.25)}
+  @media (max-width:720px){.nav-links{display:none}}
+
+  /* ========== HERO ========== */
+  .hero{padding:clamp(70px,10vw,140px) 0 clamp(50px,6vw,80px);position:relative}
+  .hero-badge{
+    display:inline-flex;align-items:center;gap:10px;padding:8px 14px;
+    font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;
+    color:var(--accent1);
+    background:linear-gradient(90deg,rgba(0,229,255,0.1),rgba(185,54,255,0.1));
+    border:1px solid transparent;
+    background-clip:padding-box;position:relative;margin-bottom:28px;
+  }
+  .hero-badge::before{
+    content:"";position:absolute;inset:0;padding:1px;
+    background:var(--grad2);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+  }
+  .hero-badge .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent1);box-shadow:0 0 12px var(--accent1);animation:pulse 1.5s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:0.3;transform:scale(0.85)}}
+
+  .hero h1{
+    font-family:var(--display);font-weight:900;font-size:clamp(44px,7vw,92px);line-height:0.95;letter-spacing:-0.03em;
+    margin-bottom:26px;
+  }
+  .hero h1 .grad{
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    display:inline-block;
+  }
+  .hero h1 .serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-0.01em}
+  .hero-sub{
+    max-width:720px;font-size:clamp(16px,1.3vw,19px);color:var(--text2);font-weight:400;line-height:1.55;margin-bottom:44px;
+  }
+  .hero-sub b{color:var(--text);font-weight:600}
+
+  .yt-pill{
+    display:inline-flex;align-items:center;gap:14px;padding:10px 10px 10px 22px;
+    background:var(--surface);border:1px solid var(--line2);border-radius:999px;
+    font-family:var(--mono);font-size:13px;color:var(--text2);
+    transition:.2s;max-width:100%;
+  }
+  .yt-pill:hover{border-color:var(--accent1)}
+  .yt-pill .lbl{font-size:10px;letter-spacing:0.2em;color:var(--text3);text-transform:uppercase;margin-right:2px}
+  .yt-pill .ttl{color:var(--text);font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40ch}
+  .yt-pill button{
+    display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;
+    background:var(--grad);color:#000;font-family:var(--body);font-weight:700;font-size:12px;letter-spacing:0.05em;
+    border:none;cursor:pointer;text-transform:uppercase;transition:.2s;
+  }
+  .yt-pill button:hover{filter:brightness(1.1);transform:translateY(-1px)}
+  .yt-pill button.ok{background:var(--accent-green);color:#000}
+
+  /* ========== SECTION BASE ========== */
+  section{padding:clamp(60px,8vw,110px) 0;position:relative}
+  .section-label{
+    display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:0.2em;color:var(--accent1);text-transform:uppercase;margin-bottom:22px;
+  }
+  .section-label::before{content:"";width:28px;height:1px;background:var(--grad2)}
+  .section h2{
+    font-family:var(--display);font-weight:900;font-size:clamp(36px,5vw,64px);line-height:1;letter-spacing:-0.02em;margin-bottom:20px;
+  }
+  .section h2 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .section h2 .serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-0.01em}
+  .section-sub{max-width:700px;color:var(--text2);font-size:16px;line-height:1.55;margin-bottom:40px}
+
+  /* ========== LEARN GRID ========== */
+  .learn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+  .learn-card{
+    background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:28px 24px;
+    position:relative;overflow:hidden;transition:.25s;
+  }
+  .learn-card::before{
+    content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--grad2);
+  }
+  .learn-card:hover{border-color:var(--line2);transform:translateY(-3px)}
+  .learn-ic{
+    width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+    background:linear-gradient(135deg,rgba(0,229,255,0.12),rgba(185,54,255,0.12));
+    border:1px solid var(--line2);margin-bottom:18px;color:var(--accent1);
+  }
+  .learn-card p{font-family:var(--body);font-weight:500;color:var(--text);font-size:15px;line-height:1.4}
+
+  /* ========== TOOLS ========== */
+  .tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+  .tool{
+    display:flex;align-items:center;gap:16px;padding:20px 22px;
+    background:var(--bg2);border:1px solid var(--line);border-radius:14px;transition:.2s;
+  }
+  .tool:hover{border-color:var(--accent1)}
+  .tool-ic{
+    width:44px;height:44px;border-radius:10px;background:#fff;display:grid;place-items:center;padding:6px;flex:0 0 auto;
+  }
+  .tool-ic.dark{background:#0b0b12;border:1px solid var(--line2)}
+  .tool-ic img{width:100%;height:100%;object-fit:contain}
+  .tool-info{flex:1;min-width:0}
+  .tool-info .n{font-family:var(--display);font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px}
+  .tool-info .d{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:0.05em}
+  .tool-badge{
+    font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+    padding:4px 8px;border-radius:6px;background:rgba(100,255,155,0.12);color:var(--accent-green);
+    flex:0 0 auto;
+  }
+  .tool-badge.paid{background:rgba(255,194,71,0.12);color:var(--accent-amber)}
+
+  /* ========== STEPS ========== */
+  .steps{display:flex;flex-direction:column;gap:22px;margin-top:12px}
+  .step{
+    background:var(--bg2);border:1px solid var(--line);border-radius:22px;padding:clamp(28px,4vw,44px);
+    position:relative;overflow:hidden;transition:.25s;
+  }
+  .step::before{
+    content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--grad2);
+  }
+  .step::after{
+    content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;border-radius:50%;
+    background:radial-gradient(closest-side,rgba(185,54,255,0.18),transparent);pointer-events:none;
+  }
+  .step:hover{border-color:var(--line2)}
+  .step-hd{display:flex;align-items:baseline;gap:22px;flex-wrap:wrap;margin-bottom:22px}
+  .step-num{
+    font-family:var(--display);font-weight:900;font-size:clamp(52px,7vw,88px);line-height:0.85;letter-spacing:-0.04em;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;flex:0 0 auto;
+  }
+  .step-title{font-family:var(--display);font-weight:800;font-size:clamp(22px,2.4vw,32px);line-height:1.1;letter-spacing:-0.01em;flex:1;min-width:200px}
+  .step-desc{color:var(--text2);font-size:15.5px;line-height:1.55;margin-bottom:22px;max-width:780px}
+  .step-desc b{color:var(--text);font-weight:600}
+
+  .actions{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+  .actions li{
+    display:flex;gap:12px;align-items:flex-start;padding:10px 14px;
+    background:rgba(255,255,255,0.02);border-left:2px solid var(--accent1);border-radius:6px;
+    font-size:15px;color:var(--text);line-height:1.45;
+  }
+  .actions li::before{content:"▸";color:var(--accent1);font-weight:700;flex:0 0 auto}
+  .actions li b{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+  .actions li code{font-family:var(--mono);background:rgba(0,229,255,0.08);color:var(--accent1);padding:1px 6px;border-radius:4px;font-size:13px}
+
+  .prompt-block{
+    background:linear-gradient(180deg,#0a0e1f 0%,#0d1226 100%);
+    border-radius:14px;padding:24px 26px;margin:20px 0;
+    position:relative;box-shadow:0 12px 40px -12px rgba(185,54,255,0.25);
+  }
+  .prompt-block::before{
+    content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:3px;background:var(--grad2);
+  }
+  .prompt-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+  .prompt-label{
+    font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:0.16em;color:var(--accent2);text-transform:uppercase;
+  }
+  .prompt-label .em{color:var(--text)}
+  .prompt-copy{
+    display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;
+    background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.3);color:var(--accent1);
+    font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+    cursor:pointer;transition:.2s;
+  }
+  .prompt-copy:hover{background:rgba(0,229,255,0.15);border-color:var(--accent1)}
+  .prompt-copy.ok{background:rgba(100,255,155,0.12);border-color:var(--accent-green);color:var(--accent-green)}
+  .prompt-text{
+    font-family:var(--mono);font-size:14px;font-weight:400;color:var(--text);line-height:1.55;
+    white-space:pre-wrap;word-break:break-word;
+  }
+
+  .tip{
+    display:flex;gap:12px;align-items:flex-start;padding:16px 20px;border-radius:12px;
+    background:linear-gradient(90deg,rgba(0,229,255,0.06),rgba(185,54,255,0.06));
+    border:1px solid rgba(0,229,255,0.15);margin-top:16px;
+  }
+  .tip::before{content:"💡";font-size:18px;flex:0 0 auto}
+  .tip b{color:var(--text);font-weight:600}
+  .tip p{color:var(--text2);font-size:14.5px;line-height:1.5;margin:0}
+  .tip code{font-family:var(--mono);background:rgba(0,229,255,0.1);color:var(--accent1);padding:1px 5px;border-radius:4px;font-size:12.5px}
+
+  .warn{
+    display:flex;gap:12px;align-items:flex-start;padding:16px 20px;border-radius:12px;
+    background:rgba(255,194,71,0.06);border:1px solid rgba(255,194,71,0.25);margin-top:16px;
+  }
+  .warn::before{content:"⚠️";font-size:18px;flex:0 0 auto}
+  .warn p{color:var(--text2);font-size:14.5px;line-height:1.5;margin:0}
+  .warn b{color:var(--accent-amber);font-weight:600}
+
+  .settings{
+    display:flex;gap:10px;align-items:flex-start;padding:14px 18px;border-radius:10px;
+    background:rgba(255,255,255,0.02);margin-top:16px;font-size:14px;color:var(--text2);line-height:1.5;
+  }
+  .settings::before{content:"⚙️";flex:0 0 auto}
+  .settings b{color:var(--text);font-weight:600}
+
+  .code-block{
+    background:#0a0e1f;border:1px solid var(--line2);border-radius:12px;padding:20px;
+    font-family:var(--mono);font-size:13px;color:var(--text);line-height:1.6;overflow-x:auto;
+    white-space:pre;margin:16px 0;
+  }
+  .code-block .k{color:var(--accent2)}
+  .code-block .s{color:var(--accent-green)}
+  .code-block .c{color:var(--text3);font-style:italic}
+  .code-block .f{color:var(--accent1)}
+
+  /* ========== CORE RULE block ========== */
+  .core-rule{
+    background:linear-gradient(135deg,rgba(0,229,255,0.08),rgba(185,54,255,0.08));
+    border:1px solid transparent;border-radius:22px;padding:clamp(28px,4vw,44px);position:relative;
+    margin-top:24px;
+  }
+  .core-rule::before{
+    content:"";position:absolute;inset:0;padding:1px;border-radius:22px;
+    background:var(--grad2);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+  }
+  .core-rule h3{font-family:var(--display);font-weight:800;font-size:28px;margin-bottom:16px}
+  .core-rule h3 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+  /* ========== LIMITS / CANT DO ========== */
+  .limits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .limit-card{
+    background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;
+  }
+  .limit-card .lb{
+    font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:0.15em;color:var(--accent-amber);
+    text-transform:uppercase;margin-bottom:10px;
+  }
+  .limit-card .v{font-family:var(--display);font-weight:900;font-size:48px;line-height:1;margin-bottom:10px;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .limit-card p{color:var(--text2);font-size:14px;line-height:1.5}
+  .limit-card p b{color:var(--text)}
+
+  .cant{display:flex;flex-direction:column;gap:14px}
+  .cant-item{
+    display:flex;gap:18px;align-items:flex-start;padding:22px 26px;
+    background:var(--bg2);border:1px solid var(--line);border-radius:14px;
+  }
+  .cant-item .ico{
+    width:38px;height:38px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;
+    background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.3);color:#ff5a5a;font-family:var(--display);font-weight:900;
+  }
+  .cant-item .txt h4{font-family:var(--display);font-weight:700;font-size:16.5px;color:var(--text);margin-bottom:6px}
+  .cant-item .txt p{font-size:14.5px;color:var(--text2);line-height:1.5}
+  .cant-item .txt p b{color:var(--text);font-weight:600}
+
+  /* ========== LINKS ========== */
+  .links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+  .link-card{
+    display:flex;align-items:center;gap:16px;padding:20px 22px;
+    background:var(--bg2);border:1px solid var(--line);border-radius:14px;transition:.2s;
+    position:relative;
+  }
+  .link-card:hover{border-color:var(--accent1);transform:translateY(-2px)}
+  .link-card::after{content:"↗";color:var(--text3);font-size:18px;margin-left:auto;transition:.2s}
+  .link-card:hover::after{color:var(--accent1);transform:translate(2px,-2px)}
+  .link-ic{
+    width:38px;height:38px;border-radius:9px;background:#fff;padding:6px;flex:0 0 auto;display:grid;place-items:center;
+  }
+  .link-ic.dark{background:#0b0b12;border:1px solid var(--line2)}
+  .link-ic img{width:100%;height:100%;object-fit:contain}
+  .link-info .n{font-family:var(--display);font-weight:700;font-size:15px;color:var(--text);line-height:1.1}
+  .link-info .d{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:0.03em;margin-top:2px}
+
+  /* ========== CTA (new format) ========== */
+  .cta-section{padding:clamp(40px,6vw,70px) 0 clamp(40px,6vw,70px)}
+  .cta-card{
+    background:var(--bg2);border:1px solid var(--line);border-radius:26px;
+    padding:clamp(32px,4vw,48px) clamp(30px,6vw,100px);position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap;
+    animation:glow 3s ease-in-out infinite;
+  }
+  @keyframes glow{
+    0%,100%{box-shadow:0 0 60px -10px rgba(0,229,255,0.15),0 0 100px -20px rgba(185,54,255,0.12)}
+    50%{box-shadow:0 0 80px -10px rgba(0,229,255,0.25),0 0 140px -20px rgba(185,54,255,0.2)}
+  }
+  .cta-left{flex:1;min-width:280px}
+  .cta-title{font-family:var(--display);font-weight:800;font-size:clamp(22px,2.6vw,34px);line-height:1.15;letter-spacing:-0.01em;color:var(--text)}
+  .cta-title .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .cta-sub{
+    display:inline-flex;align-items:center;gap:10px;margin-top:14px;
+    font-family:var(--mono);font-size:12.5px;color:var(--text2);letter-spacing:0.04em;
+  }
+  .cta-sub::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--grad2);flex:0 0 auto;box-shadow:0 0 8px var(--accent1)}
+
+  .cta-btn{
+    display:inline-flex;align-items:center;gap:8px;padding:18px 40px;
+    background:var(--grad);color:#000;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:0.05em;
+    border-radius:12px;text-transform:uppercase;transition:.2s;white-space:nowrap;flex:0 0 auto;
+  }
+  .cta-btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+  @media (max-width:720px){.cta-card{flex-direction:column;align-items:stretch;text-align:left;padding:32px 28px}.cta-btn{justify-content:center}}
+
+  /* ========== FOOTER ========== */
+  footer{padding:60px 0 40px;border-top:1px solid var(--line);text-align:center}
+  footer .f-brand{
+    font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:0.02em;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    margin-bottom:8px;
+  }
+  footer .f-tag{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:18px}
+  footer .f-yt{
+    display:inline-flex;align-items:center;gap:10px;padding:10px 20px;border:1px solid var(--line);border-radius:999px;
+    font-family:var(--mono);font-size:12px;color:var(--text2);cursor:pointer;transition:.2s;background:transparent;
+  }
+  footer .f-yt:hover{border-color:var(--accent1);color:var(--accent1)}
+  footer .f-yt.ok{border-color:var(--accent-green);color:var(--accent-green)}
+
+  /* enter animations */
+  @keyframes fade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .hero>*{animation:fade .8s ease both}
+  .hero .hero-badge{animation-delay:.1s}
+  .hero h1{animation-delay:.2s}
+  .hero-sub{animation-delay:.35s}
+  .yt-pill{animation-delay:.5s}
+
+  @media (min-width:2200px){
+    .wrap{max-width:1400px}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand">МАСТОДОНТ</a>
+    <div class="nav-links">
+      <a href="#tools" class="nav-link">Инструменты</a>
+      <a href="#steps" class="nav-link">Шаги</a>
+      <a href="#links" class="nav-link">Ссылки</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-badge"><span class="pulse"></span>Материалы к уроку</div>
+    <h1>
+      <span class="grad">Claude Code 2.0</span><br>
+      <span class="serif">агенты,</span> которые работают <span class="serif">без тебя</span>
+    </h1>
+    <p class="hero-sub">
+      Пошаговый гайд ко всему что ты видел в видео. Промпты, инструкции, код для подключения вебхука к своему сайту. Скопировал, повторил, <b>получил результат</b>.
+    </p>
+    <div class="yt-pill">
+      <span class="lbl">Ищи на YouTube</span>
+      <span class="ttl" id="yt-title">Claude Code 2.0 · агенты в облаке · Мастодонт</span>
+      <button id="yt-copy" onclick="copyYT()">Копировать</button>
+    </div>
+  </div>
+</section>
+
+<!-- LEARN -->
+<section>
+  <div class="wrap">
+    <div class="section-label">Что ты сможешь после</div>
+    <h2>Научишься делать <span class="grad">пять вещей</span></h2>
+    <div class="learn-grid">
+      <div class="learn-card">
+        <div class="learn-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <p>Запускать агентов в облаке 24/7 — работают даже с выключенным компом</p>
+      </div>
+      <div class="learn-card">
+        <div class="learn-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v12H4z"/><path d="M4 10h16M8 20h8"/></svg></div>
+        <p>Автоматически обрабатывать заявки: ресёрч → персональное письмо → запись в CRM</p>
+      </div>
+      <div class="learn-card">
+        <div class="learn-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div>
+        <p>Получать ежедневный дайджест новостей в Notion на полном автопилоте</p>
+      </div>
+      <div class="learn-card">
+        <div class="learn-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/></svg></div>
+        <p>Писать «жёсткие» промпты, которые работают автономно без лишнего диалога</p>
+      </div>
+      <div class="learn-card">
+        <div class="learn-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h18M3 16h18M7 4v16M17 4v16"/></svg></div>
+        <p>Подключить вебхук к собственному сайту — Tilda, WordPress или любой код</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="wrap">
+    <div class="section-label">Набор инструментов</div>
+    <h2>Что <span class="grad">понадобится</span></h2>
+    <p class="section-sub">Все ссылки проверены, переходы работают. Для теста хватит даже бесплатных тарифов.</p>
+    <div class="tools">
+      <a class="tool" href="https://claude.ai/download" target="_blank" rel="noopener">
+        <div class="tool-ic"><img src="https://dl.dropboxusercontent.com/scl/fi/w42h3annaxdizx0jcis7d/Claude_AI_symbol.svg?rlkey=9rhhij5kbffo9q84cwik70cxg&raw=1" alt="Claude"></div>
+        <div class="tool-info"><div class="n">Claude Code 2.0</div><div class="d">claude.ai/download</div></div>
+        <span class="tool-badge paid">$20+ / мес</span>
+      </a>
+      <a class="tool" href="https://notion.so" target="_blank" rel="noopener">
+        <div class="tool-ic"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Notion_app_logo.png/600px-Notion_app_logo.png" alt="Notion"></div>
+        <div class="tool-info"><div class="n">Notion</div><div class="d">notion.so</div></div>
+        <span class="tool-badge">бесплатно</span>
+      </a>
+      <a class="tool" href="https://gmail.com" target="_blank" rel="noopener">
+        <div class="tool-ic"><img src="https://dl.dropboxusercontent.com/scl/fi/lpaeqid4xuaju2p4invsf/Gmail_icon_-2020-.svg.png?rlkey=5y0lel8dtmerwsvygqtexds9h&raw=1" alt="Gmail"></div>
+        <div class="tool-info"><div class="n">Gmail</div><div class="d">gmail.com · тестовый аккаунт</div></div>
+        <span class="tool-badge">бесплатно</span>
+      </a>
+      <a class="tool" href="https://github.com" target="_blank" rel="noopener">
+        <div class="tool-ic dark"><img src="https://dl.dropboxusercontent.com/scl/fi/p4j95xqximv6ieb3e8mpl/github_logo_icon_229278.webp?rlkey=vxtmsrxq6erhg0t4fwqi9kzh4&raw=1" alt="GitHub"></div>
+        <div class="tool-info"><div class="n">GitHub</div><div class="d">github.com · для пустого репо</div></div>
+        <span class="tool-badge">бесплатно</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section id="steps">
+  <div class="wrap">
+    <div class="section-label">По шагам от А до Я</div>
+    <h2>Делаешь <span class="grad">семь шагов</span><br>и всё <span class="serif">работает</span></h2>
+
+    <div class="steps">
+
+      <!-- STEP 1 -->
+      <article class="step">
+        <div class="step-hd"><div class="step-num">01</div><div class="step-title">Обнови Claude Code до 2.0 и подключи коннекторы</div></div>
+        <p class="step-desc">Настройка один раз — дальше пользуешься постоянно. Без этого шага ничего не заработает: агенты не смогут писать в Notion и Gmail.</p>
+        <ul class="actions">
+          <li>Скачай или обнови приложение с <b>claude.ai/download</b></li>
+          <li>Сверху в окне должна быть переключалка: <b>Claude / Программирование / Совместная работа / Чат</b>. Нет — значит старая версия, переустанови</li>
+          <li>Открой <b>Customize</b> в левом меню</li>
+          <li>Подключи <b>Notion</b> через OAuth в один клик</li>
+          <li>Подключи <b>Gmail</b> через OAuth в один клик</li>
+        </ul>
+        <div class="settings"><span><b>Настройки модели:</b> внизу чата выбери модель (Claude 4.7) и контекстное окно. Для большинства задач хватает обычного режима мышления. Если лень подтверждать каждое действие — включай <b>Bypass Permission</b>.</span></div>
+      </article>
+
+      <!-- STEP 2 -->
+      <article class="step">
+        <div class="step-hd"><div class="step-num">02</div><div class="step-title">Создай пустой GitHub-репозиторий за 30 секунд</div></div>
+        <p class="step-desc">Репо нужен чисто технически — Claude требует привязать его к каждому сценарию. Один раз создал — используй везде.</p>
+        <ul class="actions">
+          <li>Открой <b>github.com</b>. Нет аккаунта — регаешься, бесплатно, пара минут</li>
+          <li>Правый верхний угол → кнопка <b>«+»</b> → <b>«New repository»</b></li>
+          <li>Repository name: любое, например <code>claude-agents</code></li>
+          <li>Оставь <b>Public</b> или <b>Private</b> — не важно для Claude</li>
+          <li>Поставь галку <b>«Add a README file»</b> (чтобы репо не был совсем пустым)</li>
+          <li>Жми <b>«Create repository»</b> — готово</li>
+        </ul>
+        <div class="tip"><p>Если ты не программист и слово «репозиторий» пугает — <b>не парься</b>. Ты просто создал технический контейнер, больше к нему не вернёшься. Claude использует его для внутренней логики.</p></div>
+      </article>
+
+      <!-- STEP 3 -->
+      <article class="step">
+        <div class="step-hd"><div class="step-num">03</div><div class="step-title">Создай тестовую форму через Claude</div></div>
+        <p class="step-desc">Форма будет сквозным героем — сначала тренируемся с Preview, потом подключим к вебхуку в Шаге 6.</p>
+        <ul class="actions">
+          <li>Открой новый чат в Claude Code</li>
+          <li>Вставь промпт ниже</li>
+          <li>Дождись пока Claude создаст форму в <b>Preview-режиме</b> справа</li>
+          <li>Держи этот чат открытым — вернёмся в Шаге 6</li>
+        </ul>
+        <div class="prompt-block">
+          <div class="prompt-head">
+            <div class="prompt-label">💬 Промпт 1 — <span class="em">Создание формы</span></div>
+            <button class="prompt-copy" data-copy="p1">Копировать</button>
+          </div>
+          <div class="prompt-text" id="p1">Создай мне простую страницу с премиальным дизайном. Мне нужна форма с четырьмя полями: Имя, Email, Сколько у тебя денег, и Почему ты хочешь со мной работать. Сделай её красиво.</div>
+        </div>
+      </article>
+
+      <!-- STEP 4 -->
+      <article class="step">
+        <div class="step-hd"><div class="step-num">04</div><div class="step-title">Агент по расписанию — «Ежедневный обзор»</div></div>
+        <p class="step-desc">Агент каждое утро будет собирать новости про ИИ и складывать в Notion. Один раз настроил — работает бесконечно.</p>
+        <ul class="actions">
+          <li>В левой панели открой <b>«Рутина»</b> (Routines)</li>
+          <li>Жми <b>«Новая рутина»</b> → выбери <b>«Удалённый» (Remote)</b></li>
+          <li>Добавь эмодзи 🧠 и название: <b>«Ежедневный обзор»</b></li>
+          <li>Вставь промпт ниже</li>
+          <li>Выбери пустой GitHub-репо из Шага 2</li>
+          <li>Триггеры → <b>«По расписанию»</b> → выстави <b>8:00</b> ежедневно</li>
+          <li>Подключи коннектор <b>Notion</b>, остальные удали</li>
+          <li>Жми <b>«Создать»</b>, потом <b>«Запустить сейчас»</b> (Run now) для теста</li>
+        </ul>
+        <div class="prompt-block">
+          <div class="prompt-head">
+            <div class="prompt-label">💬 Промпт 2 — <span class="em">Ежедневный обзор</span></div>
+            <button class="prompt-copy" data-copy="p2">Копировать</button>
+          </div>
+          <div class="prompt-text" id="p2">Каждый день собирай последние новости про искусственный интеллект и автоматизации. Создавай короткую красивую страницу в Notion. Покажи мне 5 главных апдейтов по Claude Code и всё остальное, что стоит внимания. Максимум 8 пунктов.</div>
+        </div>
+        <div class="settings"><span><b>Где смотреть результат:</b> раздел <b>«Запуски»</b> (Runs) слева → кликаешь на последний → увидишь отчёт и ссылку на страницу в Notion.</span></div>
+      </article>
+
+      <!-- STEP 5 -->
+      <article class="step">
+        <div class="step-hd"><div class="step-num">05</div><div class="step-title">Агент через вебхук — «Новый лид»</div></div>
+        <p class="step-desc">Тот же алгоритм, но триггер — внешний API-запрос. Заявки с формы / сайта / CRM прилетают, агент сразу обрабатывает.</p>
+        <ul class="actions">
+          <li><b>«Рутина»</b> → <b>«Новая рутина»</b> → <b>«Удалённый»</b></li>
+          <li>Эмодзи 🎯 и название: <b>«Новый лид»</b></li>
+          <li>Вставь промпт ниже</li>
+          <li>Выбери тот же GitHub-репо</li>
+          <li>Триггеры → <b>«Вызов API»</b> (API call / Webhook)</li>
+          <li>Claude выдаст <b>уникальный URL</b> и <b>секретный токен</b> — копируй оба, сохрани</li>
+          <li>Оставь только <b>Notion</b> и <b>Gmail</b>, остальные коннекторы удали (Fireflies тоже не нужен)</li>
+          <li>Жми <b>«Создать»</b></li>
+        </ul>
+        <div class="prompt-block">
+          <div class="prompt-head">
+            <div class="prompt-label">💬 Промпт 3 — <span class="em">Обработка лидов (жёсткий приказ)</span></div>
+            <button class="prompt-copy" data-copy="p3">Копировать</button>
+          </div>
+          <div class="prompt-text" id="p3">Каждый раз когда приходит новый лид через вебхук — выполняй три действия:
+
+1. Зайди на сайт лида, изучи чем он занимается
+2. Создай черновик приветственного письма на его email. Короткое, персональное, в моём стиле
+3. Создай страницу в Notion с данными лида в виде таблицы: имя, email, бюджет, сайт, цель, мой ресёрч
+
+Важно: ничего не уточняй, вопросов мне не задавай. Получил вход - выполнил все три действия и завершил работу. В конце выдай одну строку-отчёт что сделано.</div>
+        </div>
+        <div class="warn"><p><b>Секретный токен</b> передаётся в заголовке запроса. Без него вебхук отклонит запрос — это защита от посторонних, без неё кто угодно мог бы дёргать твоего агента.</p></div>
+      </article>
+
+      <!-- STEP 6 -->
+      <article class="step">
+        <div class="step-hd"><div class="step-num">06</div><div class="step-title">Подключи форму из Preview к вебхуку</div></div>
+        <p class="step-desc">Возвращаемся к чату с формой из Шага 3. Claude сам пропишет логику отправки — руками код трогать не надо.</p>
+        <ul class="actions">
+          <li>Вернись в чат с формой (Шаг 3)</li>
+          <li>Скопируй <b>URL вебхука</b> из агента «Новый лид» (Шаг 5). Забыл — открой агента → нажми карандашик в настройках триггера</li>
+          <li>Вставь промпт ниже — <b>подставь свой URL и токен</b></li>
+          <li>Заполни форму в Preview как обычный клиент: имя, email, бюджет, комментарий</li>
+          <li>Жми <b>«Отправить»</b></li>
+          <li>Открой <b>«Запуски»</b> — увидишь новый с пометкой <b>«Сработало через API»</b></li>
+          <li>Проверь: <b>Notion</b> → новая страница с лидом + <b>Gmail</b> → черновик в папке «Черновики»</li>
+        </ul>
+        <div class="prompt-block">
+          <div class="prompt-head">
+            <div class="prompt-label">💬 Промпт 4 — <span class="em">Подключение формы к вебхуку</span></div>
+            <button class="prompt-copy" data-copy="p4">Копировать</button>
+          </div>
+          <div class="prompt-text" id="p4">Подключи эту форму к моему вебхуку. URL вот: [вставь URL]. Токен авторизации: [вставь токен]. При нажатии кнопки «Отправить» — POST-запрос на этот эндпоинт с данными из всех полей формы. Токен передавай в заголовке Authorization как Bearer.</div>
+        </div>
+      </article>
+
+      <!-- STEP 7 -->
+      <article class="step">
+        <div class="step-hd"><div class="step-num">07</div><div class="step-title">Подключи вебхук к своему реальному сайту</div></div>
+        <p class="step-desc">Если у тебя уже есть свой сайт (Tilda, WordPress, Webflow, кастомный) — отправляй заявки напрямую туда, без Preview Claude.</p>
+        <div class="prompt-block">
+          <div class="prompt-head">
+            <div class="prompt-label">⌨️ Код кнопки «Отправить» — JavaScript</div>
+            <button class="prompt-copy" data-copy="p5">Копировать</button>
+          </div>
+          <div class="prompt-text" id="p5">const response = await fetch('ТВОЙ_URL_ВЕБХУКА', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer ТВОЙ_ТОКЕН',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: document.getElementById('name').value,
+    email: document.getElementById('email').value,
+    budget: document.getElementById('budget').value,
+    message: document.getElementById('message').value
+  })
+});</div>
+        </div>
+        <div class="settings"><span><b>Что подставить:</b> <code>ТВОЙ_URL_ВЕБХУКА</code> — URL из агента «Новый лид». <code>ТВОЙ_ТОКЕН</code> — секретный токен из того же окна. ID полей (<code>name</code>, <code>email</code>, <code>budget</code>, <code>message</code>) — замени на ID полей твоей формы.</span></div>
+        <div class="tip"><p><b>Для Tilda:</b> в T123 (или любом блоке формы) → Настройки → Webhook → вставляешь URL, токен добавляешь в заголовки. <b>Для WordPress/Webflow:</b> через плагин WPForms или встроенный webhook-экшн. Плюс везде работает кастомный JS в HTML-блоке — код выше универсален.</p></div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- CORE RULE -->
+<section>
+  <div class="wrap">
+    <div class="section-label">Главное правило</div>
+    <h2>Промпт = <span class="grad">жёсткий приказ</span></h2>
+    <div class="core-rule">
+      <h3>Ошибка, из-за которой автоматизация ломается <span class="grad">у всех</span></h3>
+      <p style="color:var(--text2);font-size:15.5px;line-height:1.6;margin-bottom:16px">Если промпт написан «по-человечески» («помоги сделать…») — агент начнёт задавать уточняющие вопросы. А отвечать некому, он в облаке. <b style="color:var(--text)">Автоматизация зависнет.</b></p>
+      <ul class="actions" style="margin-bottom:0">
+        <li>Промпт для облачного агента — это <b>ТЗ</b>, не диалог</li>
+        <li>Структура: «получаешь X → делаешь A, B, C → возвращаешь отчёт»</li>
+        <li>Обязательная строчка: <b>«Вопросов не задавай. Ничего не уточняй»</b></li>
+        <li>Если логика ветвится — пропиши все ветки в промпте явно</li>
+      </ul>
+      <div class="tip" style="margin-top:20px"><p>Перед тем как ставить агента на боевой режим — <b>запусти вручную через «Run now» минимум 2 раза</b>. Посмотри как он думает, допили промпт.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LIMITS -->
+<section>
+  <div class="wrap">
+    <div class="section-label">Лимиты тарифов</div>
+    <h2>Квоты на <span class="grad">облачные запуски</span></h2>
+    <p class="section-sub">Функция экспериментальная, Anthropic даёт жёсткие лимиты. Для теста хватит Pro, для реальной автоматизации 24/7 — минимум Max.</p>
+    <div class="limits-grid">
+      <div class="limit-card"><div class="lb">Pro</div><div class="v">5</div><p>запусков в день. <b>Для теста</b> самое то</p></div>
+      <div class="limit-card"><div class="lb">Max · Рекомендую</div><div class="v">15</div><p>запусков в день. <b>Минимум для продакшена</b></p></div>
+      <div class="limit-card"><div class="lb">Team</div><div class="v">25</div><p>запусков в день. Общий пул на команду</p></div>
+      <div class="limit-card"><div class="lb">Enterprise</div><div class="v">25+</div><p>Можно <b>пробить лимит</b> с доплатой</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CANT DO -->
+<section>
+  <div class="wrap">
+    <div class="section-label">Ограничения</div>
+    <h2>Чего агенты <span class="grad">не умеют</span></h2>
+    <p class="section-sub">Пропустишь этот блок — потратишь кучу нервов. Закладывай в сценарии заранее.</p>
+    <div class="cant">
+      <div class="cant-item"><div class="ico">✕</div><div class="txt"><h4>Нет памяти между запусками</h4><p>Каждый старт с чистого листа. Решил проблему клиента сегодня — завтра не вспомнит. <b>Выход:</b> прописывай «сохрани лог в Supabase / Notion» прямо в промпт.</p></div></div>
+      <div class="cant-item"><div class="ico">✕</div><div class="txt"><h4>Нет доступа к локальным файлам</h4><p>Агенты в облаке, твой Chrome / рабочий стол им недоступны. <b>Выход:</b> всё что нужно — грузи в Google Drive или Notion, давай API-доступ.</p></div></div>
+      <div class="cant-item"><div class="ico">✕</div><div class="txt"><h4>Нет остановок в процессе</h4><p>Агент не спросит «как тут поступить?». Любая неоднозначность в промпте → либо решает сам, либо зависает. <b>Промпт должен быть однозначным.</b></p></div></div>
+      <div class="cant-item"><div class="ico">✕</div><div class="txt"><h4>Недетерминированность</h4><p>Это ИИ. 100 запусков = 100 немного разных ответов. Для строгих «если А → Б» бери <b>n8n или Make</b> — они инструменты-партнёры, не конкуренты.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LINKS -->
+<section id="links">
+  <div class="wrap">
+    <div class="section-label">Все ссылки</div>
+    <h2>Сохраняй <span class="grad">в закладки</span></h2>
+    <div class="links-grid">
+      <a class="link-card" href="https://claude.ai/download" target="_blank" rel="noopener">
+        <div class="link-ic"><img src="https://dl.dropboxusercontent.com/scl/fi/w42h3annaxdizx0jcis7d/Claude_AI_symbol.svg?rlkey=9rhhij5kbffo9q84cwik70cxg&raw=1" alt=""></div>
+        <div class="link-info"><div class="n">Claude Code 2.0</div><div class="d">claude.ai/download</div></div>
+      </a>
+      <a class="link-card" href="https://notion.so" target="_blank" rel="noopener">
+        <div class="link-ic"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Notion_app_logo.png/600px-Notion_app_logo.png" alt=""></div>
+        <div class="link-info"><div class="n">Notion</div><div class="d">notion.so</div></div>
+      </a>
+      <a class="link-card" href="https://gmail.com" target="_blank" rel="noopener">
+        <div class="link-ic"><img src="https://dl.dropboxusercontent.com/scl/fi/lpaeqid4xuaju2p4invsf/Gmail_icon_-2020-.svg.png?rlkey=5y0lel8dtmerwsvygqtexds9h&raw=1" alt=""></div>
+        <div class="link-info"><div class="n">Gmail</div><div class="d">gmail.com</div></div>
+      </a>
+      <a class="link-card" href="https://github.com" target="_blank" rel="noopener">
+        <div class="link-ic dark"><img src="https://dl.dropboxusercontent.com/scl/fi/p4j95xqximv6ieb3e8mpl/github_logo_icon_229278.webp?rlkey=vxtmsrxq6erhg0t4fwqi9kzh4&raw=1" alt=""></div>
+        <div class="link-info"><div class="n">GitHub</div><div class="d">github.com</div></div>
+      </a>
+      <a class="link-card" href="https://docs.anthropic.com" target="_blank" rel="noopener">
+        <div class="link-ic dark"><svg width="22" height="22" viewBox="0 0 24 24" fill="#FFA15A"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></div>
+        <div class="link-info"><div class="n">Anthropic Docs</div><div class="d">docs.anthropic.com</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="wrap">
+    <div class="cta-card">
+      <div class="cta-left">
+        <div class="cta-title">Пошаговый план: как&nbsp;выйти<br>на&nbsp;первые деньги <span class="grad">в&nbsp;ИИ в&nbsp;2026</span></div>
+        <div class="cta-sub">+ розыгрыш Claude каждые 2 недели</div>
+      </div>
+      <a class="cta-btn" href="https://t.me/mastodont_aibot?start=agency" target="_blank" rel="noopener">Забрать →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="f-brand">МАСТОДОНТ</div>
+    <div class="f-tag">AI и нейросети - просто, по делу</div>
+    <button class="f-yt" id="f-yt" onclick="copyYTFooter()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23 7a3 3 0 00-2-2c-2-.5-10-.5-10-.5S3 4.5 1 5a3 3 0 00-2 2C-1.5 9-.5 12 1 17a3 3 0 002 2c2 .5 10 .5 10 .5s8 0 10-.5a3 3 0 002-2c1.5-5 .5-8 0-10zM9 15V8l6 3.5-6 3.5z"/></svg>
+      <span id="f-yt-text">Ищи канал ИИ Мастодонт на YouTube</span>
+    </button>
+  </div>
+</footer>
+
+<script>
+  // Copy prompts
+  document.querySelectorAll('.prompt-copy').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      const id=btn.getAttribute('data-copy');
+      const text=document.getElementById(id).innerText;
+      try{
+        await navigator.clipboard.writeText(text);
+        const orig=btn.innerText;
+        btn.classList.add('ok');
+        btn.innerText='✓ Скопировано';
+        setTimeout(()=>{btn.classList.remove('ok');btn.innerText=orig;},2000);
+      }catch(e){}
+    });
+  });
+
+  // Copy YouTube title
+  async function copyYT(){
+    const btn=document.getElementById('yt-copy');
+    const txt=document.getElementById('yt-title').innerText;
+    try{
+      await navigator.clipboard.writeText(txt);
+      btn.classList.add('ok');
+      btn.innerText='✓ Готово';
+      setTimeout(()=>{btn.classList.remove('ok');btn.innerText='Копировать';},2000);
+    }catch(e){}
+  }
+  async function copyYTFooter(){
+    const btn=document.getElementById('f-yt');
+    const el=document.getElementById('f-yt-text');
+    try{
+      await navigator.clipboard.writeText('ИИ Мастодонт');
+      btn.classList.add('ok');
+      el.innerText='✓ Название скопировано — ищи на YouTube';
+      setTimeout(()=>{btn.classList.remove('ok');el.innerText='Ищи канал ИИ Мастодонт на YouTube';},2500);
+    }catch(e){}
+  }
+</script>
+
+</body>
+</html>
