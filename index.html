@@ -428,11 +428,11 @@
     <p class="hero-sub">
       Пошаговый гайд ко всему что ты видел в видео. Промпты, инструкции, код для подключения вебхука к своему сайту. Скопировал, повторил, <b>получил результат</b>.
     </p>
-    <div class="yt-pill">
-      <span class="lbl">Ищи на YouTube</span>
-      <span class="ttl" id="yt-title">Claude Code 2.0 · агенты в облаке · Мастодонт</span>
-      <button id="yt-copy" onclick="copyYT()">Копировать</button>
-    </div>
+    <a class="yt-pill" href="https://youtube.com/@aiBoomb" target="_blank" rel="noopener">
+      <span class="lbl">На YouTube</span>
+      <span class="ttl">Claude Code 2.0 · агенты в облаке · Мастодонт</span>
+      <button type="button">Смотреть →</button>
+    </a>
   </div>
 </section>
 
@@ -757,10 +757,10 @@
   <div class="wrap">
     <div class="f-brand">МАСТОДОНТ</div>
     <div class="f-tag">AI и нейросети - просто, по делу</div>
-    <button class="f-yt" id="f-yt" onclick="copyYTFooter()">
+    <a class="f-yt" href="https://youtube.com/@aiBoomb" target="_blank" rel="noopener">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23 7a3 3 0 00-2-2c-2-.5-10-.5-10-.5S3 4.5 1 5a3 3 0 00-2 2C-1.5 9-.5 12 1 17a3 3 0 002 2c2 .5 10 .5 10 .5s8 0 10-.5a3 3 0 002-2c1.5-5 .5-8 0-10zM9 15V8l6 3.5-6 3.5z"/></svg>
-      <span id="f-yt-text">Ищи канал ИИ Мастодонт на YouTube</span>
-    </button>
+      <span>Канал ИИ Мастодонт на YouTube →</span>
+    </a>
   </div>
 </footer>
 
@@ -780,27 +780,6 @@
     });
   });
 
-  // Copy YouTube title
-  async function copyYT(){
-    const btn=document.getElementById('yt-copy');
-    const txt=document.getElementById('yt-title').innerText;
-    try{
-      await navigator.clipboard.writeText(txt);
-      btn.classList.add('ok');
-      btn.innerText='✓ Готово';
-      setTimeout(()=>{btn.classList.remove('ok');btn.innerText='Копировать';},2000);
-    }catch(e){}
-  }
-  async function copyYTFooter(){
-    const btn=document.getElementById('f-yt');
-    const el=document.getElementById('f-yt-text');
-    try{
-      await navigator.clipboard.writeText('ИИ Мастодонт');
-      btn.classList.add('ok');
-      el.innerText='✓ Название скопировано — ищи на YouTube';
-      setTimeout(()=>{btn.classList.remove('ok');el.innerText='Ищи канал ИИ Мастодонт на YouTube';},2500);
-    }catch(e){}
-  }
 </script>
 
 </body>
